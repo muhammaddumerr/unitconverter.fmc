@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMC Unit Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Tailwind bg-gray-100 */
+            color: #1F2937; /* Dark text for general body text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- FMC Unit Converter Section -->
+        <section id="fmc-converter" class="p-6 bg-white rounded-lg shadow-md text-gray-800 mx-auto w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-[#005082] mb-6">🧮 FMC Unit Converter</h2>
+            <p class="text-center max-w-3xl mx-auto mb-8 text-gray-600">
+                Easily convert quantities between different FMC measurement units. Input a value and select the desired conversion.
+            </p>
+            <div class="max-w-md mx-auto bg-gray-50 p-6 rounded-lg shadow-inner">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="fmc-input-value" class="block text-sm font-medium text-gray-700">Input Value:</label>
+                        <input type="number" id="fmc-input-value" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#0077C0] focus:ring focus:ring-[#0077C0] focus:ring-opacity-50 p-2 text-gray-800">
+                    </div>
+                    <div>
+                        <label for="fmc-input-unit" class="block text-sm font-medium text-gray-700">Input Unit:</label>
+                        <select id="fmc-input-unit" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#0077C0] focus:ring focus:ring-[#0077C0] focus:ring-opacity-50 p-2 text-gray-800">
+                            <option value="sticks">Sticks</option>
+                            <option value="packs">Packs</option>
+                            <option value="outers">Outers</option>
+                            <option value="m">M</option>
+                            <option value="cartons">Cartons</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label for="fmc-output-unit" class="block text-sm font-medium text-gray-700">Convert To:</label>
+                        <select id="fmc-output-unit" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#0077C0] focus:ring focus:ring-[#0077C0] focus:ring-opacity-50 p-2 text-gray-800">
+                            <option value="sticks">Sticks</option>
+                            <option value="packs">Packs</option>
+                            <option value="outers">Outers</option>
+                            <option value="m">M</option>
+                            <option value="cartons">Cartons</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="fmc-convert-btn" class="w-full bg-[#0077C0] text-white py-2 px-4 rounded-md hover:bg-[#005082] focus:outline-none focus:ring-2 focus:ring-[#0077C0] focus:ring-opacity-75 transition duration-150 ease-in-out">
+                            Convert
+                        </button>
+                    </div>
+                </div>
+                <div id="fmc-result" class="text-center text-lg font-bold text-[#005082] bg-[#e0f7ff] p-3 rounded-md border border-[#00A1E4] min-h-[40px] flex items-center justify-center">
+                    <!-- Conversion result will be displayed here -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // FMC Unit Converter Logic
+            const fmcInputValue = document.getElementById('fmc-input-value');
+            const fmcInputUnit = document.getElementById('fmc-input-unit');
+            const fmcOutputUnit = document.getElementById('fmc-output-unit');
+            const fmcConvertBtn = document.getElementById('fmc-convert-btn');
+            const fmcResult = document.getElementById('fmc-result');
+
+            const conversionsFMC = {
+                'sticks': {
+                    'packs': value => value / 20,
+                    'outers': value => value / 200,
+                    'm': value => value / 1000,
+                    'cartons': value => value / 10000,
+                    'sticks': value => value
+                },
+                'packs': {
+                    'sticks': value => value * 20,
+                    'outers': value => value / 10,
+                    'm': value => value / 50,
+                    'cartons': value => value / 500,
+                    'packs': value => value
+                },
+                'outers': {
+                    'sticks': value => value * 200,
+                    'packs': value => value * 10,
+                    'm': value => value / 5,
+                    'cartons': value => value / 50,
+                    'outers': value => value
+                },
+                'm': {
+                    'sticks': value => value * 1000,
+                    'packs': value => value * 50,
+                    'outers': value => value * 5,
+                    'cartons': value => value / 10,
+                    'm': value => value
+                },
+                'cartons': {
+                    'sticks': value => value * 10000,
+                    'packs': value => value * 500,
+                    'outers': value => value * 50,
+                    'm': value => value * 10,
+                    'cartons': value => value
+                }
+            };
+
+            fmcConvertBtn.addEventListener('click', () => {
+                const value = parseFloat(fmcInputValue.value);
+                const inputUnit = fmcInputUnit.value;
+                const outputUnit = fmcOutputUnit.value;
+
+                if (isNaN(value)) {
+                    fmcResult.textContent = 'Please enter a valid number.';
+                    return;
+                }
+
+                if (conversionsFMC[inputUnit] && conversionsFMC[inputUnit][outputUnit]) {
+                    const result = conversionsFMC[inputUnit][outputUnit](value);
+                    fmcResult.textContent = `${value} ${inputUnit} = ${result.toFixed(2)} ${outputUnit}`;
+                } else {
+                    fmcResult.textContent = 'Conversion not supported.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
